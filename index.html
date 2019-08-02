@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<header>
+    <title>STT</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</header>
+<style>
+body{
+    background-color: #247BA0;
+}
+button{
+    color: #247BA0;
+    transition: 0.18s;
+}
+.raise:hover, .raise:focus {
+  transform: translateY(-0.20em);
+}
+</style>
+<body>
+    <div class="w-1/5 tex-center h-auto mx-auto content-center mt-20">
+        <button onclick="getLang('en-US')" class="raise mr-5 bg-white font-semibold shadow-lg py-2 px-4 border rounded-full">
+            English
+        </button>
+        <button onclick="getLang('fr-FR')" class="raise bg-white mr-5 font-semibold shadow-lg py-2 px-4 border rounded-full">
+            Français
+        </button>
+        <button onclick="getLang('ar-AR')" class="raise bg-white font-semibold shadow-lg py-2 px-5 border rounded-full">
+            Arabe
+        </button>
+        <input type="hidden" id="choice" value="en-US">
+    </div>
+    <div class="words w-3/5 h-auto min-h-full mx-auto text-xl content-center bg-white my-10 rounded shadow-lg p-5" contenteditable="true"></div>
+</body>
+<script>
+
+
+
+
+
+function getLang(lang = 'en-US'){
+    document.getElementById("choice").value = lang;
+    initVoice();
+}
+
+function initVoice(){
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const recognition = new SpeechRecognition();
+    recognition.interimResults = true;
+    recognition.lang = document.getElementById("choice").value;
+
+    switch (document.getElementById("choice").value) {
+        case 'en-US':
+            speak = "Let's speak ...";
+            break;
+        case 'fr-FR':
+            speak = "Parlez ...";
+            break;
+        case 'ar-AR':
+            speak = "...تحدث";
+            break;
+    
+        default:
+            break;
+    }
+
+
+    let p = document.createElement('p');
+    p.textContent = speak;
+    const words = document.querySelector('.words');
+    words.appendChild(p);
+    recognition.start();
+    recognition.addEventListener('result', e => {
+        console.log(e);
+        const transcript = Array.from(e.results).map(result => result[0]).map(result => result.transcript).join('')
+        p.textContent = transcript;
+        if (e.results[0].isFinal) {
+            p = document.createElement('p');
+            words.appendChild(p);
+        }
+    });
+
+    recognition.addEventListener('end', recognition.start);
+}
+</script>
+</html>
