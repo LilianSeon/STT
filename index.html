@@ -65,6 +65,9 @@ function initVoice(){
 
 
     let p = document.createElement('p');
+    if(document.querySelector('.words').childNodes[0]){
+        document.querySelector('.words').childNodes[0].remove();
+    }
     p.textContent = speak;
     const words = document.querySelector('.words');
     words.appendChild(p);
